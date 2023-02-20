@@ -4,6 +4,8 @@ pipeline {
     environment {
         DATE = new Date().format('yy.M')
         TAG = "${DATE}.${BUILD_NUMBER}"
+        AWS_REGION = 'us-east-1'
+        AWS_OUTPUT_FORMAT = 'json'
     }
     
     stages {
@@ -30,6 +32,12 @@ pipeline {
 
 			steps {
                 echo 'Login to AWS ECR starts'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-access-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
+                    sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
+                    sh 'aws configure set default.region $AWS_REGION'
+                    sh 'aws configure set default.output $AWS_OUTPUT_FORMAT'
+                }
                 script{
                     sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
                 }
