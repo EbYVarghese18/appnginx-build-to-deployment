@@ -29,6 +29,7 @@ pipeline {
         stage('Login to AWS ECR') {
 
 			steps {
+                echo 'Login to AWS ECR starts'
                 withCredentials([[
                     $class: 'AmazonWebServiceCredentialsBinding',
                     credentialsId: 'aws-ecr-access-key',
@@ -36,7 +37,7 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
 
                     sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
-                    
+
                 }
 			}
 		}
