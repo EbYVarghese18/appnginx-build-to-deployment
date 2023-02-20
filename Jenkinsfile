@@ -11,7 +11,7 @@ pipeline {
         stage('SCM checkout') {
             steps {
                 echo 'checkout starts'
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/EbYVarghese18/myapp-nginx']])
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/EbYVarghese18/appnginx-build-to-deployment']])
                 echo 'checkout ends'
             }
         }
