@@ -50,9 +50,7 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh 'docker tag myapp-nginx:${TAG} public.ecr.aws/j9i5q7x1/myapp-nginx:${TAG}'
                     sh 'docker tag myapp-nginx:${TAG} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
-				    sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:${TAG}'
                     sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
                     echo 'Push the image to ECR ends'
                 }
