@@ -31,24 +31,19 @@ pipeline {
 			steps {
                 echo 'Login to AWS ECR starts'
                 script{
-                    withCredentials([[
-                    $class: 'AmazonWebServiceCredentialsBinding',
-                    credentialsId: 'aws-ecr-access-key',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
-
-                        sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
-
-                    }
-                }   
-			}
+                    sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
+                }
+                echo 'Login to AWS ECR ends'
+            }
 		}
         
         stage('Tag and Push image to AWS ECR') {
             
 			steps {
-                sh 'docker tag myapp-nginx:${TAG} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
-				sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
+                script{
+                    sh 'docker tag myapp-nginx:${TAG} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
+				    sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
+                }
 			}
 		}
 	}
