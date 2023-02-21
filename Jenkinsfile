@@ -69,7 +69,7 @@ pipeline {
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
                     echo "pushing the chart to ECR"
-                    sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
                     sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
 
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
