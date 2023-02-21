@@ -41,7 +41,7 @@ pipeline {
                     sh 'aws configure set default.output $AWS_OUTPUT_FORMAT'
                 }
                 script{
-                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
+                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REPOSITORY}"
                 }
             }
 		}
@@ -50,8 +50,8 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
-                    sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
+                    sh "docker tag ${APP_NAME}:${BUILD_NUMBER} ${ECR_REPOSITORY}/${APP_NAME}:latest"
+                    sh "docker push ${ECR_REPOSITORY}/${APP_NAME}:latest"
                 }
 			}
 		}
@@ -69,7 +69,7 @@ pipeline {
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
                     echo "pushing the chart to ECR"
-                    sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
+                    sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                     sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
 
                     echo 'Cleanig up the files'
