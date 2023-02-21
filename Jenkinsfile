@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo 'Build Dockerimage starts'
                 script{
-                    sh 'docker build -t myapp-nginx:${TAG} .'
+                    sh 'docker build -t myapp-nginx:${BUILD_NUMBER} .'
                 }
                 echo 'Build Dockerimage ends'
             }
@@ -68,7 +68,7 @@ pipeline {
                     sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
                     sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx-helm.zip'
                     // sh 'helm push myapp-nginx-helm-0.${BUILD_NUMBER}.0.tgz oci://976846671615.dkr.ecr.us-east-1.amazonaws.com'
-                    // sh 'rm -rf myapp-nginx-helm-*'
+                    sh 'rm -rf myapp-nginx-helm'
                 }
             }
         }
