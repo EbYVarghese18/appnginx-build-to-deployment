@@ -6,6 +6,7 @@ pipeline {
         // TAG = "${DATE}.${BUILD_NUMBER}"
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
+        REPO_NAME = 'testrepo'
         CHART_NAME = 'myapp-nginx-helm'
         CHART_VERSION = '${BUILD_NUMBER}'
         ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
@@ -43,6 +44,12 @@ pipeline {
                 }
             }
 		}
+
+        stage('create repository in ECR'){
+            steps{
+                sh "aws ecr create-repository --repository-name ${REPO_NAME} --region ${AWS_REGION}"
+            }
+        }
         
         stage('Tag and Push image to AWS ECR') {
 			steps {
@@ -66,16 +73,14 @@ pipeline {
 
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
-                    
-                    // sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
+
                     // sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
 
-                    echo 'pushing the package zip file to ECR'
+                    echo 'pushing the packaged zip file to ECR'
                     // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
-                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${CHART_NAME}"
-
-                    // sh 'helm push '
+                    echo "${CHART_NAME}-${CHART_VERSION}.tgz"
+                    sh "helm chart push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${CHART_NAME}"
 
                     // echo 'Cleanig up the files'
                     // sh 'rm -rf myapp-nginx-helm'
