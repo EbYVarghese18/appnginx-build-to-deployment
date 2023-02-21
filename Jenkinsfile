@@ -40,7 +40,8 @@ pipeline {
                     sh 'aws configure set default.output $AWS_OUTPUT_FORMAT'
                 }
                 script{
-                    sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
+                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
+                    // sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
                 }
             }
 		}
