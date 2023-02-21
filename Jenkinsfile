@@ -6,6 +6,9 @@ pipeline {
         // TAG = "${DATE}.${BUILD_NUMBER}"
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
+        CHART_NAME = 'myapp-nginx-helm'
+        CHART_VERSION = '1.0.0'
+        ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
     }
     
     stages {
@@ -55,20 +58,30 @@ pipeline {
 			}
 		}
 
-        stage('Helm Push') {
+        stage('Build Helm chart and Push to ECR') {
             steps {
                 script{
-                    sh 'helm create myapp-nginx-helm'
-                    // sh 'pwd'
-                    // sh 'ls -al'
-                    sh 'echo version : 0.${BUILD_NUMBER}.0 >> myapp-nginx-helm/Chart.yaml'
-                    sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' myapp-nginx-helm/values.yaml"
-                    // sh 'helm package myapp-nginx-helm'
-                    // sh 'aws ecr get-login-password  --region us-east-1 | helm registry login --username AWS --password-stdin 976846671615.dkr.ecr.us-east-1.amazonaws.com'
-                    sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
-                    sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx-helm.zip'
-                    // sh 'helm push myapp-nginx-helm-0.${BUILD_NUMBER}.0.tgz oci://976846671615.dkr.ecr.us-east-1.amazonaws.com'
-                    sh 'rm -rf myapp-nginx-helm'
+                    echo 'creating helm chart'
+                    sh "helm create ${CHART_NAME}"
+
+                    echo 'updating image tag in value file'
+                    sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
+
+                    echo 'Builing helm package'
+                    sh "helm package ${CHART_NAME}"
+                    // sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
+
+                    // sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
+
+                    // echo 'pushing the package zip file to ECR'
+                    // sh "helm chart save ${CHART_NAME}.tgz ${ECR_REPOSITORY}.dkr.ecr.${AWS_REGION}.amazonaws.com/${CHART_NAME}:${CHART_VERSION}"
+                    // sh "helm chart push ${ECR_REPOSITORY}.dkr.ecr.${AWS_REGION}.amazonaws.com/${CHART_NAME}:${CHART_VERSION}"
+
+                    // sh 'helm push '
+
+                    // echo 'Cleanig up the files'
+                    // sh 'rm -rf myapp-nginx-helm'
+                    // sh 'rm -rf myapp-nginx-helm.zip'
                 }
             }
         }
