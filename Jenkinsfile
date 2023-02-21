@@ -81,7 +81,8 @@ pipeline {
                     // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
                     
-                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
+                    echo "${ECR_REPOSITORY}/${APP_NAME}"
+                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
 
                     // echo 'Cleanig up the files'
                     // sh "rm -rf ${CHART_NAME}"
