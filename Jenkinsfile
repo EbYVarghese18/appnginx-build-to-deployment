@@ -29,7 +29,6 @@ pipeline {
         }
         
         stage('Login to AWS ECR') {
-
 			steps {
                 echo 'Login to AWS ECR starts'
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-access-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
@@ -46,7 +45,6 @@ pipeline {
 		}
         
         stage('Tag and Push image to AWS ECR') {
-            
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
@@ -56,5 +54,28 @@ pipeline {
                 }
 			}
 		}
+
+        stage('Helm Push') {
+            steps {
+                script{
+                    sh 'helm create myapp-nginx-helm'
+                    // sh 'pwd'
+                    // sh 'ls -al'
+                    sh 'echo version : 0.${BUILD_NUMBER}.0 >> myapp-nginx-helm/Chart.yaml'
+                    sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' myapp-nginx-helm/values.yaml"
+                    sh 'helm package myapp-nginx-helm'
+                    // sh 'aws ecr get-login-password  --region us-east-1 | helm registry login --username AWS --password-stdin 976846671615.dkr.ecr.us-east-1.amazonaws.com'
+                    // sh 'helm push myapp-nginx-helm-0.${BUILD_NUMBER}.0.tgz oci://976846671615.dkr.ecr.us-east-1.amazonaws.com'
+                    // sh 'rm -rf myapp-nginx-helm-*'
+                }
+            }
+        }
+
+        // stage('Invoke Build number to Pipeline B') {
+        //     steps {
+        //         build job: 'sample-maven-project-docker-deployment', parameters : [[ $class: 'StringParameterValue', name: 'buildnum', value: "${BUILD_NUMBER}"]]
+        //     }
+        // }
+
 	}
-}   
+}
