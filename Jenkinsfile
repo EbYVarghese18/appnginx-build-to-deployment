@@ -68,14 +68,14 @@ pipeline {
                     sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
 
                     echo 'Builing helm package'
-                    sh "helm package ${CHART_NAME}"
+                    sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
                     // sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
                     // sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
 
-                    // echo 'pushing the package zip file to ECR'
-                    // sh "helm chart save ${CHART_NAME}.tgz ${ECR_REPOSITORY}.dkr.ecr.${AWS_REGION}.amazonaws.com/${CHART_NAME}:${CHART_VERSION}"
-                    // sh "helm chart push ${ECR_REPOSITORY}.dkr.ecr.${AWS_REGION}.amazonaws.com/${CHART_NAME}:${CHART_VERSION}"
+                    echo 'pushing the package zip file to ECR'
+                    sh "helm chart save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    sh "helm chart push ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
 
                     // sh 'helm push '
 
