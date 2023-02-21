@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DATE = new Date().format('yy.M')
-        TAG = "${DATE}.${BUILD_NUMBER}"
+        // DATE = new Date().format('yy.M')
+        // TAG = "${DATE}.${BUILD_NUMBER}"
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
     }
@@ -48,7 +48,7 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh 'docker tag myapp-nginx:${TAG} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
+                    sh 'docker tag myapp-nginx:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
                     sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
                     echo 'Push the image to ECR ends'
                 }
@@ -63,8 +63,10 @@ pipeline {
                     // sh 'ls -al'
                     sh 'echo version : 0.${BUILD_NUMBER}.0 >> myapp-nginx-helm/Chart.yaml'
                     sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' myapp-nginx-helm/values.yaml"
-                    sh 'helm package myapp-nginx-helm'
+                    // sh 'helm package myapp-nginx-helm'
                     // sh 'aws ecr get-login-password  --region us-east-1 | helm registry login --username AWS --password-stdin 976846671615.dkr.ecr.us-east-1.amazonaws.com'
+                    sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
+                    sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx-helm.zip'
                     // sh 'helm push myapp-nginx-helm-0.${BUILD_NUMBER}.0.tgz oci://976846671615.dkr.ecr.us-east-1.amazonaws.com'
                     // sh 'rm -rf myapp-nginx-helm-*'
                 }
