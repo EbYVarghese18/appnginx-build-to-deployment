@@ -82,8 +82,8 @@ pipeline {
                     echo 'pushing the packaged zip file to ECR'
                     // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
-                    echo "${CHART_NAME}-${CHART_VERSION}.tgz"
-                    sh "helm chart push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${CHART_NAME}"
+                    
+                    sh "helm chart push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
 
                     // echo 'Cleanig up the files'
                     // sh 'rm -rf myapp-nginx-helm'
