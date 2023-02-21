@@ -77,13 +77,11 @@ pipeline {
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
-                    // sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
-
                     echo 'pushing the packaged zip file to ECR'
                     // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
                     
-                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
+                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
 
                     // echo 'Cleanig up the files'
                     // sh "rm -rf ${CHART_NAME}"
