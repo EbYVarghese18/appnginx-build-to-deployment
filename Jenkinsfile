@@ -82,7 +82,6 @@ pipeline {
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
                     
                     echo "${ECR_REPOSITORY}/${APP_NAME}"
-                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
                     sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
 
                     // echo 'Cleanig up the files'
