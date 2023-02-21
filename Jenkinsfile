@@ -10,7 +10,6 @@ pipeline {
         APP_NAME = 'myapp_nginx'
         CHART_NAME = 'myapp_nginx'
         CHART_VERSION = '${BUILD_NUMBER}'
-        // ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
     
@@ -43,23 +42,15 @@ pipeline {
                 }
                 script{
                     sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
-                    // sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
                 }
             }
 		}
 
-        // stage('create repository in ECR'){
-        //     steps{
-        //         sh "aws ecr create-repository --repository-name ${REPO_NAME} --region ${AWS_REGION}"
-        //     }
-        // }
-        
         stage('Tag and Push image to AWS ECR') {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
                     sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
-                    // sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/${APP_NAME}:latest'
                     sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
                 }
 			}
@@ -77,17 +68,18 @@ pipeline {
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
-                    echo 'pushing the packaged zip file to ECR'
-                    // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    echo "pushing the chart to ECR"
+                    sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
-                    
-                    echo "${ECR_REPOSITORY}/${APP_NAME}"
-                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
+                    // echo "${ECR_REPOSITORY}/${APP_NAME}"
+                    // sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
 
                     // echo 'Cleanig up the files'
                     // sh "rm -rf ${CHART_NAME}"
                     // sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
-                }
+                }   
             }
         }
 
