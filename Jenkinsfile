@@ -8,7 +8,7 @@ pipeline {
         AWS_OUTPUT_FORMAT = 'json'
         REPO_NAME = 'testrepo'
         APP_NAME = 'myapp_nginx'
-        CHART_NAME = 'myapp_nginx_helm'
+        CHART_NAME = 'myapp_nginx'
         CHART_VERSION = '${BUILD_NUMBER}'
         // ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
