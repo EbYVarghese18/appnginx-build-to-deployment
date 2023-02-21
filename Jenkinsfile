@@ -7,8 +7,8 @@ pipeline {
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
         REPO_NAME = 'testrepo'
-        APP_NAME = 'myapp-nginx'
-        CHART_NAME = 'myapp-nginx-helm'
+        APP_NAME = 'myapp_nginx'
+        CHART_NAME = 'myapp_nginx_helm'
         CHART_VERSION = '${BUILD_NUMBER}'
         // ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
@@ -27,7 +27,7 @@ pipeline {
             steps {
                 echo 'Build Dockerimage starts'
                 script{
-                    sh 'docker build -t ${myapp-nginx}:${BUILD_NUMBER} .'
+                    sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} ."
                 }
             }
         }
@@ -58,9 +58,9 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh 'docker tag ${myapp-nginx}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${myapp-nginx}:latest'
-                    // sh 'docker tag ${myapp-nginx}:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/${myapp-nginx}:latest'
-                    sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${myapp-nginx}:latest'
+                    sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
+                    // sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/${APP_NAME}:latest'
+                    sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
                 }
 			}
 		}
