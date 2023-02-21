@@ -7,9 +7,11 @@ pipeline {
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
         REPO_NAME = 'testrepo'
+        APP_NAME = 'myapp-nginx'
         CHART_NAME = 'myapp-nginx-helm'
         CHART_VERSION = '${BUILD_NUMBER}'
-        ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
+        // ECR_REPOSITORY = 'public.ecr.aws/j9i5q7x1/myapp-nginx'
+        ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
     
     stages {
@@ -25,7 +27,7 @@ pipeline {
             steps {
                 echo 'Build Dockerimage starts'
                 script{
-                    sh 'docker build -t myapp-nginx:${BUILD_NUMBER} .'
+                    sh 'docker build -t ${myapp-nginx}:${BUILD_NUMBER} .'
                 }
             }
         }
@@ -46,19 +48,19 @@ pipeline {
             }
 		}
 
-        stage('create repository in ECR'){
-            steps{
-                sh "aws ecr create-repository --repository-name ${REPO_NAME} --region ${AWS_REGION}"
-            }
-        }
+        // stage('create repository in ECR'){
+        //     steps{
+        //         sh "aws ecr create-repository --repository-name ${REPO_NAME} --region ${AWS_REGION}"
+        //     }
+        // }
         
         stage('Tag and Push image to AWS ECR') {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh 'docker tag myapp-nginx:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
-                    sh 'docker push public.ecr.aws/j9i5q7x1/myapp-nginx:latest'
-                    echo 'Push the image to ECR ends'
+                    sh 'docker tag ${myapp-nginx}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${myapp-nginx}:latest'
+                    // sh 'docker tag ${myapp-nginx}:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/${myapp-nginx}:latest'
+                    sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${myapp-nginx}:latest'
                 }
 			}
 		}
