@@ -58,6 +58,7 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
+                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
                     sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
                     // sh 'docker tag ${APP_NAME}:${BUILD_NUMBER} public.ecr.aws/j9i5q7x1/${APP_NAME}:latest'
                     sh 'docker push 095919053879.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest'
