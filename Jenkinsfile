@@ -17,7 +17,6 @@ pipeline {
             steps {
                 echo 'checkout starts'
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/EbYVarghese18/appnginx-build-to-deployment']])
-                echo 'checkout ends'
             }
         }
         
@@ -27,7 +26,6 @@ pipeline {
                 script{
                     sh 'docker build -t myapp-nginx:${BUILD_NUMBER} .'
                 }
-                echo 'Build Dockerimage ends'
             }
         }
         
@@ -43,7 +41,6 @@ pipeline {
                 script{
                     sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j9i5q7x1'
                 }
-                echo 'Login to AWS ECR ends'
             }
 		}
         
@@ -69,13 +66,14 @@ pipeline {
 
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
+                    
                     // sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
-
                     // sh 'zip -r myapp-nginx-helm.zip myapp-nginx-helm'
 
                     echo 'pushing the package zip file to ECR'
-                    sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
-                    sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
+                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${CHART_NAME}"
 
                     // sh 'helm push '
 
