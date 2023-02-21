@@ -69,12 +69,13 @@ pipeline {
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
 
                     echo "pushing the chart to ECR"
+                    sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin 095919053879.dkr.ecr.us-east-1.amazonaws.com"
                     // sh "helm save ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
-                    sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
-
+                    // sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz ${ECR_REPOSITORY}/${CHART_NAME}:${CHART_VERSION}"
+                    // sh "helm registry login ${ECR_REPOSITORY} -u AWS --password-stdin"
                     // sh "helm push ${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}"
                     // echo "${ECR_REPOSITORY}/${APP_NAME}"
-                    // sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}/${APP_NAME}"
+                    sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
 
                     // echo 'Cleanig up the files'
                     // sh "rm -rf ${CHART_NAME}"
