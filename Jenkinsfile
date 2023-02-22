@@ -8,7 +8,7 @@ pipeline {
         AWS_OUTPUT_FORMAT = 'json'
         APP_NAME = 'myapp-nginx'
         CHART_NAME = 'myapp-nginx'
-        CHART_VERSION = '${BUILD_NUMBER}'
+        CHART_VERSION = '0.${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
     
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo 'Build Dockerimage starts'
                 script{
-                    sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} ."
+                    sh "docker build -t ${APP_NAME}:0.${BUILD_NUMBER} ."
                 }
             }
         }
@@ -49,7 +49,7 @@ pipeline {
 			steps {
                 script{
                     echo 'Push the image to ECR starts'
-                    sh "docker tag ${APP_NAME}:${BUILD_NUMBER} ${ECR_REPOSITORY}/${APP_NAME}:latest"
+                    sh "docker tag ${APP_NAME}:0.${BUILD_NUMBER} ${ECR_REPOSITORY}/${APP_NAME}:latest"
                     sh "docker push ${ECR_REPOSITORY}/${APP_NAME}:latest"
                 }
 			}
@@ -62,7 +62,7 @@ pipeline {
                     sh "helm create ${CHART_NAME}"
 
                     echo 'updating image tag in value file'
-                    sh "sed -i 's|tag: \".*\"|tag: \"${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
+                    sh "sed -i 's|tag: \".*\"|tag: \"0.${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
 
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"
