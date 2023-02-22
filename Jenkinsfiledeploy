@@ -4,14 +4,14 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
-        CHART_NAME = 'myapp_nginx'
+        CHART_NAME = 'myapp-nginx'
         CHART_VERSION = '${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
     
     stages {
 
-        stage('Pull helm chart from ECR') {
+        stage('Setting aws configure') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-access-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
@@ -22,17 +22,17 @@ pipeline {
             }
         }
 
-        stage("pull helm package") {
+        stage("Pull helm chart from ECR") {
             steps {
                 sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
-                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 42 --untar"
+                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 0.45 --untar"
                 // sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}:${params.buildnum}  --untar"
             }
         }
 
         stage("Deploy to Minikube") {
             steps {
-                sh 'helm upgrade --install ${CHART_NAME} --version 42 ${CHART_NAME}'
+                sh 'helm upgrade --install ${CHART_NAME} --version 0.45 ${CHART_NAME}'
                 // sh 'helm upgrade --install mavenhelm --version {params.buildnum} mavenhelm'
                 // sh 'minikube kubectl get po -A'
             }
