@@ -51,6 +51,7 @@ pipeline {
                     echo 'Push the image to ECR starts'
                     sh "docker tag ${APP_NAME}:${BUILD_NUMBER} ${ECR_REPOSITORY}/${APP_NAME}:latest"
                     sh "docker push ${ECR_REPOSITORY}/${APP_NAME}:latest"
+                    sh 'docker logout'
                 }
 			}
 		}
@@ -70,7 +71,7 @@ pipeline {
                     echo "pushing the chart to ECR"
                     sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                     sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
-
+                    
                     // echo 'Cleanig up the files'
                     // sh "rm -rf ${CHART_NAME}"
                     // sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
