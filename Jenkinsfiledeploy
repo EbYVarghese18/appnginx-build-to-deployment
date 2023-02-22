@@ -8,7 +8,7 @@ pipeline {
         CHART_VERSION = '${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
-    
+
     stages {
 
         stage('Setting aws configure') {
@@ -32,6 +32,7 @@ pipeline {
 
         stage("Deploy to Minikube") {
             steps {
+                sh 'minikube start --driver=podman --container-runtime=containerd --force'
                 sh "helm install myappnginx ${CHART_NAME}/"
 
                 // sh "helm upgrade --install myappnginx ${CHART_NAME} --set image.repository=${ECR_REPOSITORY}/${CHART_NAME},image.tag= 0.45"
@@ -39,6 +40,16 @@ pipeline {
                 // sh 'minikube kubectl get po -A'
             }
         }
+
+        // stage('Deploy to kubernetes') {
+        //     steps {
+        //         echo 'deployment to k8s starts'
+        //         script{
+        //             kubernetesDeploy (configs: 'deployment.yaml', kubeconfigId: 'k8spwd')
+        //         }
+        //         echo 'deployment ends'
+        //     }
+        // }
 
 	}
 }
