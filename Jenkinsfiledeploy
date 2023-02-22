@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
-        CHART_NAME = 'myapp-nginx'
+        CHART_NAME = 'myappnginx'
         CHART_VERSION = '${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
