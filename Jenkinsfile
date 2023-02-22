@@ -71,9 +71,9 @@ pipeline {
                     sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                     sh "helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://${ECR_REPOSITORY}"
 
-                    echo 'Cleanig up the files'
-                    sh "rm -rf ${CHART_NAME}"
-                    sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
+                    // echo 'Cleanig up the files'
+                    // sh "rm -rf ${CHART_NAME}"
+                    // sh "rm -rf ${CHART_NAME}-${CHART_VERSION}.tgz"
                 }   
             }
         }
