@@ -51,7 +51,6 @@ pipeline {
                     echo 'Push the image to ECR starts'
                     sh "docker tag ${APP_NAME}:${BUILD_NUMBER} ${ECR_REPOSITORY}/${APP_NAME}:latest"
                     sh "docker push ${ECR_REPOSITORY}/${APP_NAME}:latest"
-                    sh 'docker logout'
                 }
 			}
 		}

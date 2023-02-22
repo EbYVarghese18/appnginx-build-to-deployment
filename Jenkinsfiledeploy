@@ -27,7 +27,6 @@ pipeline {
                 sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                 sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 42"
                 // sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}:${params.buildnum}  --untar"
-                sh 'helm logout'
             }
         }
 
