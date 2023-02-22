@@ -6,8 +6,8 @@ pipeline {
         // TAG = "${DATE}.${BUILD_NUMBER}"
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
-        APP_NAME = 'myapp_nginx'
-        CHART_NAME = 'myapp_nginx'
+        APP_NAME = 'myapp-nginx'
+        CHART_NAME = 'myapp-nginx'
         CHART_VERSION = '${BUILD_NUMBER}'
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
