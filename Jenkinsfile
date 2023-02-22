@@ -6,7 +6,6 @@ pipeline {
         // TAG = "${DATE}.${BUILD_NUMBER}"
         AWS_REGION = 'us-east-1'
         AWS_OUTPUT_FORMAT = 'json'
-        REPO_NAME = 'testrepo'
         APP_NAME = 'myapp_nginx'
         CHART_NAME = 'myapp_nginx'
         CHART_VERSION = '${BUILD_NUMBER}'
@@ -31,9 +30,9 @@ pipeline {
             }
         }
         
-        stage('Login to AWS ECR') {
+        stage('Docker Login to AWS ECR') {
 			steps {
-                echo 'Login to AWS ECR starts'
+                echo 'Docker Login to AWS ECR starts'
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-access-key', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
                     sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
