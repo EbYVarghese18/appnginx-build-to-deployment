@@ -9,6 +9,11 @@ pipeline {
         ECR_REPOSITORY = '095919053879.dkr.ecr.us-east-1.amazonaws.com'
     }
 
+    parameters {
+        string(name : 'buildnumber',defaultValue: '', description: 'production')
+    }
+
+
     stages {
 
         stage('Setting aws configure') {
@@ -25,7 +30,7 @@ pipeline {
         stage("Pull helm chart from ECR") {
             steps {
                 sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
-                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 0.45 --untar"
+                sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 0.${params.buildnumber} --untar"
                 // sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}:${params.buildnum}  --untar"
             }
         }
@@ -40,17 +45,28 @@ pipeline {
 
                 sh "helm install myappnginx ${CHART_NAME}/"
 
-                // sh "helm upgrade --install myappnginx ${CHART_NAME} --set image.repository=${ECR_REPOSITORY}/${CHART_NAME},image.tag= 0.45"
-                // sh 'helm upgrade --install mavenhelm --version {params.buildnum} mavenhelm'
+                // sh "helm upgrade --install myappnginx ${CHART_NAME} --set image.repository=${ECR_REPOSITORY}/${CHART_NAME},image.tag= 0.${params.buildnumber}"
+                // sh 'helm upgrade --install myappnginx --version 0.${params.buildnumber} ${CHART_NAME}'
                 // sh 'minikube kubectl get po -A'
             }
         }
 
-        stage('Deploy to kubernetes') {
+        stage('Cleaning up') {
             steps {
                 sh 'rm -r ${CHART_NAME}'
             }
         }
+
+        // stage('Deploy to kubernetes') {
+        //       steps {
+        //           echo 'deployment to k8s starts'
+        //           script{
+        //               kubernetesDeploy (configs: 'deployment.yaml', kubeconfigId: 'k8spwd')
+        //           }
+        //           echo 'deployment ends'
+        //       }
+        // }
+
 
 	}   
 }

@@ -78,11 +78,11 @@ pipeline {
             }
         }
 
-        // stage('Invoke Build number to Pipeline B') {
-        //     steps {
-        //         build job: 'sample-maven-project-docker-deployment', parameters : [[ $class: 'StringParameterValue', name: 'buildnum', value: "${BUILD_NUMBER}"]]
-        //     }
-        // }
+        stage('Invoke Build number to Pipeline Deployment') {
+            steps {
+                build job: 'appnginx-pullanddeploy', parameters : [[ $class: 'StringParameterValue', name: 'buildnumber', value: "${BUILD_NUMBER}"]]
+            }
+        }
 
 	}
 }
