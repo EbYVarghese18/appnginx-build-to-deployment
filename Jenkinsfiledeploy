@@ -33,7 +33,10 @@ pipeline {
         stage("Deploy to Minikube") {
             steps {
 
-                sh 'minikube start --driver=docker --container-runtime=containerd --force'
+                // sh 'minikube start --driver= --container-runtime=containerd --force'
+
+                sh 'helm list -A'
+                sh 'kubectl get po -A'
 
                 sh "helm install myappnginx ${CHART_NAME}/"
 
@@ -49,5 +52,5 @@ pipeline {
             }
         }
 
-	}
+	}   
 }
