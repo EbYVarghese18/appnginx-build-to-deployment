@@ -64,8 +64,8 @@ pipeline {
                     echo 'updating image tag in value file'
                     sh "sed -i 's|tag: \".*\"|tag: \"0.${BUILD_NUMBER}\"|' ${CHART_NAME}/values.yaml"
 
-                    echo 'updating the repository field'
-                    sh "sed -i 's|repository: \".*\"|repository: \"${ECR_REPOSITORY}/${APP_NAME}:latest\"|' ${CHART_NAME}/values.yaml"
+                    // echo 'updating the repository field'
+                    // sh "sed -i 's|repository: \".*\"|repository: \"${ECR_REPOSITORY}/${APP_NAME}:latest\"|' ${CHART_NAME}/values.yaml"
 
                     echo 'Builing helm package'
                     sh "helm package ${CHART_NAME} --version ${CHART_VERSION}"

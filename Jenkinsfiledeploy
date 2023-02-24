@@ -30,14 +30,13 @@ pipeline {
             steps {
                 sh "aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${ECR_REPOSITORY}"
                 sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME} --version 0.${params.buildnumber} --untar"
-                // sh "helm pull oci://${ECR_REPOSITORY}/${CHART_NAME}-${CHART_VERSION}:${params.buildnum}  --untar"
             }
         }
 
         stage("Deploy to Minikube") {
             steps {
 
-                // sh 'minikube start --driver= --container-runtime=containerd --force'
+                sh 'minikube start --driver=docker --container-runtime=containerd --force'
 
                 sh 'helm list -A'
                 sh 'kubectl get po -A'
